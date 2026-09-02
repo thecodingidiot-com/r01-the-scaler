@@ -49,10 +49,16 @@ int main(int argc, char **argv)
     }
     win = SDL_CreateWindow("r01", SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED, WINDOW_W, WINDOW_H, 0);
-    ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
+    ren = SDL_CreateRenderer(win, -1, 0);
     IMG_Init(IMG_INIT_PNG);
     sprites[0] = IMG_LoadTexture(ren, "assets/tree.png");
     sprites[1] = IMG_LoadTexture(ren, "assets/rock.png");
+    if (!sprites[0] || !sprites[1])
+    {
+        printf("failed to load a sprite: %s\n", IMG_GetError());
+        printf("did you run 'bash gen_assets.sh' first?\n");
+        return (1);
+    }
     camera_init(&cam, 0.0f, 0.0f, 0.0f);
     running = 1;
     while (running)

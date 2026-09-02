@@ -244,6 +244,32 @@ else
     fail "scaler runs its event loop for 2s without crashing" "exit code: $scaler_status"
 fi
 
+# ── regression: a missing assets/ must fail loudly, not silently ────────────
+#
+# A real bug, found by an actual reader: without assets/ (gen_assets.sh
+# never run), IMG_LoadTexture used to return NULL unchecked, SDL_RenderCopy
+# silently no-op'd, and the binary ran forever showing only the flat
+# sky/tarmac backdrop -- no billboards, no visible sign anything was wrong,
+# indistinguishable from a genuinely broken camera. Fixed by checking both
+# textures and exiting with a clear message. This must never regress to
+# silent again.
+
+if [[ -d assets ]]; then
+    mv assets "$WORK_DIR/assets-backup"
+fi
+missing_assets_out=$(./scaler "$FIXTURES/scene1.txt" 2>&1)
+missing_assets_status=$?
+if [[ -d "$WORK_DIR/assets-backup" ]]; then
+    mv "$WORK_DIR/assets-backup" assets
+fi
+
+if [[ "$missing_assets_status" -eq 1 ]] && echo "$missing_assets_out" | grep -qi "gen_assets.sh"; then
+    pass "missing assets/ fails loudly with a clear message (not silently)"
+else
+    fail "missing assets/ fails loudly with a clear message (not silently)" \
+        "exit code: $missing_assets_status, output: $missing_assets_out"
+fi
+
 # ── summary ───────────────────────────────────────────────────────────────────
 
 echo
