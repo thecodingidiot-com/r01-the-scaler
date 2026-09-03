@@ -186,16 +186,16 @@ int main(void)
     check_float_near("moving forward shortens depth by the distance moved",
         proj.depth, 4.0f, 0.001f);
 
-    /* the test fixture itself: six billboards, parsed straight off disk
-     * with fgets()/sscanf(), no libtci anywhere in this file's call
-     * chain (vec2.c/camera.c/scaler.c/scene.c link with no SDL2 and no
-     * libtci -- see the Makefile's SRCS list for scaler itself). */
+    /* the test fixture itself: sixteen billboards, parsed straight off
+     * disk with fgets()/sscanf(), no libtci anywhere in this file's
+     * call chain (vec2.c/camera.c/scaler.c/scene.c link with no SDL2
+     * and no libtci -- see the Makefile's SRCS list for scaler itself). */
     if (!scene_load(&scene, "scene1.txt"))
     {
         printf("FAIL  scene_load\n");
         return (1);
     }
-    check_int("scene1.txt loads six billboards", scene.count, 6);
+    check_int("scene1.txt loads sixteen billboards", scene.count, 16);
 
     printf("\n%d passed, %d failed\n", g_pass, g_fail);
     return (g_fail > 0);
