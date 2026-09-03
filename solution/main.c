@@ -9,12 +9,21 @@
 #define TURN_SPEED  0.035f
 #define MOVE_SPEED  1.5f
 
+/*
+** Turning right must shrink `side` for anything that was dead ahead
+** (the world sweeps LEFT across the screen as you look further
+** right) -- so RIGHT/L is the negative angle delta, LEFT/H the
+** positive one. This looks backwards reading top to bottom; it isn't.
+** Verified with real X11 key injection, not just read by eye -- see
+** the chapter's own note on this in 05-the-road.mdx before "fixing"
+** it back.
+*/
 static void handle_input(t_camera *cam, Uint8 const *keys)
 {
     if (keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_H])
-        camera_turn(cam, -TURN_SPEED);
-    if (keys[SDL_SCANCODE_RIGHT] || keys[SDL_SCANCODE_L])
         camera_turn(cam, TURN_SPEED);
+    if (keys[SDL_SCANCODE_RIGHT] || keys[SDL_SCANCODE_L])
+        camera_turn(cam, -TURN_SPEED);
     if (keys[SDL_SCANCODE_UP] || keys[SDL_SCANCODE_K])
         camera_move(cam, MOVE_SPEED);
     if (keys[SDL_SCANCODE_DOWN] || keys[SDL_SCANCODE_J])
