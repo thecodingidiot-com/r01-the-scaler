@@ -7,7 +7,7 @@
 #include "render.h"
 
 #define TURN_SPEED  0.035f
-#define MOVE_SPEED  1.5f
+#define MOVE_SPEED  0.6f
 
 /*
 ** Turning right must shrink `side` for anything that was dead ahead
