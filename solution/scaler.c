@@ -19,8 +19,7 @@ t_projection    scaler_project(t_camera const *cam, t_vec2 world_pos)
     rel = vec2_sub(world_pos, cam->pos);
     proj.depth = vec2_dot(rel, cam->forward);
     proj.side = vec2_dot(rel, cam->right);
-    if (proj.depth < NEAR_PLANE)
-    {
+    if (proj.depth < NEAR_PLANE) {
         proj.visible = 0;
         return (proj);
     }

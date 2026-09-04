@@ -19,29 +19,24 @@ int scene_load(t_scene *scene, char const *path)
     fp = fopen(path, "r");
     if (!fp)
         return (0);
-    if (!fgets(line, sizeof(line), fp) || sscanf(line, "%d", &n) != 1)
-    {
+    if (!fgets(line, sizeof(line), fp) || sscanf(line, "%d", &n) != 1) {
         fclose(fp);
         return (0);
     }
-    if (n < 0 || n > MAX_BILLBOARDS)
-    {
+    if (n < 0 || n > MAX_BILLBOARDS) {
         fclose(fp);
         return (0);
     }
     scene->count = 0;
-    while (scene->count < n)
-    {
-        if (!fgets(line, sizeof(line), fp))
-        {
+    while (scene->count < n) {
+        if (!fgets(line, sizeof(line), fp)) {
             fclose(fp);
             return (0);
         }
         if (sscanf(line, "%f %f %d",
                 &scene->items[scene->count].pos.x,
                 &scene->items[scene->count].pos.y,
-                &scene->items[scene->count].sprite_id) != 3)
-        {
+                &scene->items[scene->count].sprite_id) != 3) {
             fclose(fp);
             return (0);
         }

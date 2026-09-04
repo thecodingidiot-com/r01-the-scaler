@@ -54,8 +54,7 @@ void    render_scene(t_scene const *scene, t_camera const *cam,
 
     visible = 0;
     i = 0;
-    while (i < scene->count)
-    {
+    while (i < scene->count) {
         items[visible].proj = scaler_project(cam, scene->items[i].pos);
         items[visible].sprite_id = scene->items[i].sprite_id;
         if (items[visible].proj.visible)
@@ -64,8 +63,7 @@ void    render_scene(t_scene const *scene, t_camera const *cam,
     }
     qsort(items, visible, sizeof(items[0]), compare_draw_items);
     i = 0;
-    while (i < visible)
-    {
+    while (i < visible) {
         dst.x = items[i].proj.screen_x;
         dst.y = items[i].proj.screen_y;
         dst.w = items[i].proj.size;
