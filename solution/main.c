@@ -41,18 +41,15 @@ int main(int argc, char **argv)
     Uint8 const     *keys;
     int             running;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         printf("usage: %s <scene_file>\n", argv[0]);
         return (1);
     }
-    if (!scene_load(&scene, argv[1]))
-    {
+    if (!scene_load(&scene, argv[1])) {
         printf("failed to load scene: %s\n", argv[1]);
         return (1);
     }
-    if (SDL_Init(SDL_INIT_VIDEO) != 0)
-    {
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         SDL_Log("SDL_Init: %s", SDL_GetError());
         return (1);
     }
@@ -62,18 +59,15 @@ int main(int argc, char **argv)
     IMG_Init(IMG_INIT_PNG);
     sprites[0] = IMG_LoadTexture(ren, "assets/tree.png");
     sprites[1] = IMG_LoadTexture(ren, "assets/rock.png");
-    if (!sprites[0] || !sprites[1])
-    {
+    if (!sprites[0] || !sprites[1]) {
         printf("failed to load a sprite: %s\n", IMG_GetError());
         printf("did you run 'bash gen_assets.sh' first?\n");
         return (1);
     }
     camera_init(&cam, 0.0f, 0.0f, 0.0f);
     running = 1;
-    while (running)
-    {
-        while (SDL_PollEvent(&ev))
-        {
+    while (running) {
+        while (SDL_PollEvent(&ev)) {
             if (ev.type == SDL_QUIT)
                 running = 0;
             if (ev.type == SDL_KEYDOWN && (ev.key.keysym.sym == SDLK_ESCAPE
