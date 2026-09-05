@@ -38,6 +38,12 @@ frame from one division.
 - A camera with a world position, a facing angle, and the two axes
   derived from it (`forward`, `right`) — a 2D vector camera, not just
   an x-coordinate.
+- Steering shifts world position directly (`cam->right`, never
+  rotated) instead of turning the camera — the same model Hang-On,
+  Out Run, and Space Harrier all use, not a raycaster's rotate-then-
+  move. `MIN_SIDE`/`MAX_SIDE` fence the play area, the same way
+  g03-the-getaway's own capstone does — verified there by playing an
+  actual Space Harrier ROM, not assumed from the name alone.
 - A scene file (`width height` on the first line is not used here —
   instead: a billboard count, then one `x y sprite_id` line per
   billboard), loaded with `fopen`/`fgets`/`sscanf`.
@@ -82,8 +88,10 @@ make re
 ./scaler ../fixtures/scene1.txt
 ```
 
-Controls: Left/Right arrows or `h`/`l` to turn, Up/Down arrows or
-`k`/`j` to drive forward/backward, Escape or `q` to quit.
+Controls: Left/Right arrows or `h`/`l` to steer (a direct sideways
+shift, fenced by `MIN_SIDE`/`MAX_SIDE` — the camera always faces
+forward), Up/Down arrows or `k`/`j` to drive forward/backward, Escape
+or `q` to quit.
 
 `gen_assets.sh` needs Python3 + Pillow:
 
@@ -108,8 +116,11 @@ numbers against `fixtures/scene1.txt`:
 - A billboard closer than the near plane is marked not visible.
 - Turning the camera 90 degrees swaps which world axis reads as
   "ahead"; moving the camera forward shortens depth to a fixed
-  billboard by exactly the distance travelled.
-- The fixture scene file parses into exactly six billboards.
+  billboard by exactly the distance travelled. `camera_turn()` is
+  still tested here even though `main.c` no longer calls it — the
+  function itself is still real, correct, and unchanged; it's just
+  not what steering means any more.
+- The fixture scene file parses into exactly sixteen billboards.
 
 **`scaler`** — runs its event loop for two seconds under a headless
 (`SDL_VIDEODRIVER=dummy`) video driver without crashing. A smoke test,

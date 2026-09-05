@@ -6,24 +6,38 @@
 #include "scene.h"
 #include "render.h"
 
-#define TURN_SPEED  0.035f
-#define MOVE_SPEED  0.6f
+#define STRAFE_SPEED    0.3f
+#define MOVE_SPEED      0.6f
+#define MIN_SIDE        -10.0f
+#define MAX_SIDE        10.0f
 
 /*
-** Turning right must shrink `side` for anything that was dead ahead
-** (the world sweeps LEFT across the screen as you look further
-** right) -- so RIGHT/L is the negative angle delta, LEFT/H the
-** positive one. This looks backwards reading top to bottom; it isn't.
-** Verified with real X11 key injection, not just read by eye -- see
-** the chapter's own note on this in 05-the-road.mdx before "fixing"
-** it back.
+** Steering used to call camera_turn() here -- true rotation, the
+** raycaster's own model, not Hang-On/Out Run/Space Harrier's. None of
+** the three cabinets this chapter itself names ever rotate the
+** camera to steer; verified by actually playing a real Space Harrier
+** ROM (in g03-the-getaway, this project's own capstone), not by
+** re-reading this file. `cam->right` never changes once nothing here
+** ever calls camera_turn() -- so this is a plain vector add, not a
+** rotation, fenced by MIN_SIDE/MAX_SIDE so steering has an actual
+** edge instead of an unbounded empty plane either side of the road.
+**
+** Forward/backward stays exactly as it was: MOVE_SPEED, player-held,
+** either direction. That part was never a technique claim -- nothing
+** here says this demonstrates a real cabinet's throttle -- and free
+** forward/backward is what lets a reader park next to any billboard
+** and watch it scale, not just drive past it once.
 */
 static void handle_input(t_camera *cam, Uint8 const *keys)
 {
     if (keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_H])
-        camera_turn(cam, TURN_SPEED);
+        cam->pos = vec2_add(cam->pos, vec2_scale(cam->right, -STRAFE_SPEED));
     if (keys[SDL_SCANCODE_RIGHT] || keys[SDL_SCANCODE_L])
-        camera_turn(cam, -TURN_SPEED);
+        cam->pos = vec2_add(cam->pos, vec2_scale(cam->right, STRAFE_SPEED));
+    if (cam->pos.y > MAX_SIDE)
+        cam->pos.y = MAX_SIDE;
+    if (cam->pos.y < MIN_SIDE)
+        cam->pos.y = MIN_SIDE;
     if (keys[SDL_SCANCODE_UP] || keys[SDL_SCANCODE_K])
         camera_move(cam, MOVE_SPEED);
     if (keys[SDL_SCANCODE_DOWN] || keys[SDL_SCANCODE_J])
